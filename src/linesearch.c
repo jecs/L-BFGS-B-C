@@ -79,7 +79,7 @@ static integer c__1 = 1;
     *stpmx = 1e10;
     if (*cnstnd) {
         if (*iter == 0) {
-            *stpmx = 1.;
+            *stpmx = 1e4;
         } else {
             i__1 = *n;
             for (i__ = 1; i__ <= i__1; ++i__) {
