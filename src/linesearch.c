@@ -79,7 +79,8 @@ static integer c__1 = 1;
     *stpmx = 1e10;
     if (*cnstnd) {
         if (*iter == 0) {
-            *stpmx = 1e6;
+            *stpmx = 3e6;
+			mexPrintf("Initial max. step size: %1.3e\n",*stpmx);
         } else {
             i__1 = *n;
             for (i__ = 1; i__ <= i__1; ++i__) {
