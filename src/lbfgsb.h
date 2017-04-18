@@ -234,6 +234,13 @@ extern int setulb(integer *n, integer *m, double *x,
 	iwa, integer *task, integer *iprint, integer *csave, logical *lsave, 
 	integer *isave, double *dsave); /* ftnlen task_len, ftnlen csave_len); */
 
+#define setulb_auto FORTRAN_WRAPPER(setulb_auto)
+extern int setulb_auto(integer *n, integer *m, double *x, 
+	double *l, double *u, integer *nbd, double *f, double 
+	*g, double *factr, double *pgtol, double *wa, integer *
+	iwa, integer *task, integer *iprint, integer *csave, logical *lsave, 
+	integer *isave, double *dsave);
+
 #define mainlb FORTRAN_WRAPPER(mainlb)
 extern int mainlb(integer *n, integer *m, double *x, 
         double *l, double *u, integer *nbd, double *f, double 
@@ -325,6 +332,17 @@ extern int lnsrlb(integer *n, double *l, double *u,
         integer *info, integer *task, logical *boxed, logical *cnstnd, integer *
         csave, integer *isave, double *dsave); /* ftnlen task_len, ftnlen 
         csave_len); */
+
+#define lnsrlb_auto FORTRAN_WRAPPER(lnsrlb_auto) 
+extern int lnsrlb_auto(integer *n, double *l, double *u, 
+	integer *nbd, double *x, double *f, double *fold, 
+	double *gd, double *gdold, double *g, double *d__, 
+	double *r__, double *t, double *z__, double *stp, 
+	double *dnorm, double *dtd, double *xstep, double *
+	stpmx, integer *iter, integer *ifun, integer *iback, integer *nfgv, 
+	integer *info, integer *task, logical *boxed, logical *cnstnd, integer *
+	csave, integer *isave, double *dsave);
+
 #define projgr FORTRAN_WRAPPER(projgr) 
 extern  int projgr(integer *, double *, double *,
         integer *, double *, double *, double *);

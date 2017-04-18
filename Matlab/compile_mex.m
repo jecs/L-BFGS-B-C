@@ -31,17 +31,26 @@ SRC_DIR = fullfile('..','src');
 INCLUDES = SRC_DIR;
 SRC = {'lbfgsb.c','linesearch.c','subalgorithms.c','print.c',...
     'linpack.c','miniCBLAS.c','timer.c'};
+SRC2 = [{'lbfgsb_auto.c','linesearch_auto.c'},SRC(3:end)];
 for i = 1:length(SRC)
     SRC{i} = fullfile(SRC_DIR,SRC{i});
+	SRC2{i} = fullfile(SRC_DIR,SRC2{i});
 end
 
 if ispc
     % do not specify -lm flag
     mex('lbfgsb_wrapper.c','-largeArrayDims','-UDEBUG',...
         ['-I',SRC_DIR], SRC{:} );
+    mex('lbfgsb2_wrapper.c','-largeArrayDims','-UDEBUG',...
+		'-O','CFLAGS="\$CFLAGS -std=c99"',...
+        ['-I',SRC_DIR], SRC2{:} );
 else
     mex('lbfgsb_wrapper.c','-largeArrayDims','-lm','-UDEBUG',...
         ['-I',SRC_DIR], SRC{:} );
+	mex('lbfgsb2_wrapper.c','-largeArrayDims','-lm','-UDEBUG',...
+		'-O','CFLAGS="\$CFLAGS -std=c99"',...
+        ['-I',SRC_DIR], SRC2{:} );
+	
 end
 
 %% test the new function
@@ -67,11 +76,21 @@ opts.errFcn = @(x) norm(x-1); % for now just an arbitrary fcn
 % opts.verbose = -1; % default is -1, i.e., no output from mex
 
 [x,f,info] = lbfgsb( @driver1, l, u, opts );
+[x2,f2,info2] = lbfgsb2(@driver1, l, u, opts);
 
 % The true objective value is 0.
 if abs(f) < 1e-8
-    disp('Success!');
+    disp('Success! [lbfsb]');
     semilogy( abs(info.err(:,1)-f),'o-' ); 
+    xlabel('iteration'); 
+    ylabel('error in objective function');
+else
+    disp('Something didn''t work right :-(  ');
+end
+
+if abs(f2) < 1e-8
+    disp('Success! [lfgsb2]');
+    semilogy( abs(info2.err(:,1)-f2),'o-' ); 
     xlabel('iteration'); 
     ylabel('error in objective function');
 else
@@ -113,14 +132,25 @@ opts.pgtol      = 1e-10;
 opts.factr      = 1e3;
 
 % The {f,g} is another way to call it
-[x,f,info] = lbfgsb( {f,g} , l, u, opts );
+[x1,f1,info1] = lbfgsb( {f,g} , l, u, opts );
+[x2,f2,info2] = lbfgsb2( {f,g}, l, u, opts);
 
-if abs(f) < 1e-8
-    disp('Success!');
+if abs(f1) < 1e-8
+    disp('Success! [lbfgsb]');
 % since we included opts.outputFcn, the info.err now has 3 columns.
 %   The first 2 columns are the same as before; the 3rd column
 %   is the output of our outputFcn
-semilogy( info.err(:,3)-f,'o-' ); xlabel('iteration'); ylabel('relative error in iterate function');
+semilogy( info1.err(:,3)-f1,'o-' ); xlabel('iteration'); ylabel('relative error in iterate function');
+else
+    disp('Something didn''t work right :-(  ');
+end
+
+if abs(f2) < 1e-8
+    disp('Success! [lbfgsb2]');
+% since we included opts.outputFcn, the info.err now has 3 columns.
+%   The first 2 columns are the same as before; the 3rd column
+%   is the output of our outputFcn
+semilogy( info2.err(:,3)-f2,'o-' ); xlabel('iteration'); ylabel('relative error in iterate function');
 else
     disp('Something didn''t work right :-(  ');
 end
