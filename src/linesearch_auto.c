@@ -141,7 +141,7 @@ static integer c__1 = 1;
 			if(isinf(minS))
 				*stpmx = 3e4;
 			else
-				*stpmx = minS;
+				*stpmx = minS / 10;
 			
 			mexPrintf("[LBFGSB] Initial max. step: %1.3e\n",*stpmx);
 			
